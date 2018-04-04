@@ -48,10 +48,12 @@ local heart3
 local gameOverSound 
 local incorrectSound
 local correctSound 
+local youWinSound
 -- Setting a varibale to an mp3
 local gameOverSoundChannel
 local incorrectSounsChannel
 local correctSoundChannel
+local youWinSoundChannel
 
 ---------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -128,13 +130,6 @@ local function UpdateHearts()
 end 
 
 
-local function UpdatePoints()
-	if (points == 2) then
-		youWin.isVisible = true 
-	end
-end 
-
-
 local function UpdateTime()
 
 	-- decrement the number of seconds 
@@ -180,7 +175,7 @@ local function NumericFieldListener(event)
 	if ( event.phase == "began" ) then 
 
 		
-		elseif event.phase == "submitted" then
+	elseif event.phase == "submitted" then
 
 			-- when the answer is submitted (enter key is pressed) set user input to user's answer
 			userAnswer = tonumber(event.target.text)
@@ -192,18 +187,24 @@ local function NumericFieldListener(event)
 				timer.performWithDelay(1500, HideCorrect)
 				points = points + 1
 				pointsObject.text = points 
-				UpdatePoints()
 				secondsLeft = totalSeconds 
-			else incorrectObject.isVisible = true 
+
+			else 
+				incorrectObject.isVisible = true 
 				incorrectSoundChannel = audio.play(incorrectSound)
+				correctAnswerObject.text = " The correct answer was " .. correctAnswer 
 				correctAnswerObject.isVisible = true
 				timer.performWithDelay(1500, HideIncorrect)
 				lives = lives - 1
 				secondsLeft = totalSeconds
 				UpdateHearts()
 			end	
+
 			if (points == 5) then 
-				youWin.isVisible = true 
+				youWin.isVisible = true
+				numericField.isVisible = false 
+				clockText.isVisible = false
+				youWinSoundChannel = audio.play(youWinSound)
 			end 	
 		-- clear text field 
 		event.target.text = ""
@@ -223,7 +224,6 @@ questionObject:setTextColor(0/255, 246/255, 0/255)
 -- display a points object and set the colour
 pointsObject = display.newText( "0 ", 900, 700, nil, 100)
 pointsObject:setTextColor(255/255, 255/255, 255/255)
---pointsObject.text = " 0 "
 
 -- create the correct text object and make it invisible 
 correctObject = display.newText( "Correct!", display.contentWidth/2, display.contentHeight*2/3, nil, 50)
@@ -236,7 +236,7 @@ incorrectObject:setTextColor(225/255, 0/255, 0/255)
 incorrectObject.isVisible = false 
 
 -- create a text object that tells the user what the correct answer was 
-correctAnswerObject = display.newText( " The correct answer was ", display.contentWidth/2, display.contentHeight*2.5/3, nil, 50)
+correctAnswerObject = display.newText( "", display.contentWidth/2, display.contentHeight*2.5/3, nil, 50)
 correctAnswerObject:setTextColor(255/255, 255/255, 255/255)
 correctAnswerObject.isVisible = false 
 
@@ -270,9 +270,10 @@ youWin.anchorX = 0
 youWin.anchorY = 0
 youWin.isVisible = false
 
-gameOverSound = audio.loadSound("sounds/gameOver.mp3")
-incorrectSound = audio.loadSound ("sounds/incorrect.mp3")
-correctSound = audio.loadSound("sounds/correct.mp3")
+gameOverSound = audio.loadSound("Sounds/gameOver.mp3")
+incorrectSound = audio.loadSound ("Sounds/incorrect.mp3")
+correctSound = audio.loadSound("Sounds/correct.mp3")
+youWinSound = audio.loadSound("Sounds/youWin.mp3")
 
 -- create the clock text
 clockText = display.newText("", display.contentWidth/2, display.contentHeight/2, nil, 50)
