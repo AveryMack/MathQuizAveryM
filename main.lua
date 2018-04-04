@@ -153,6 +153,9 @@ local function UpdateTime()
 end 
 
 
+
+
+
 -- function that calls the timer 
 local function StartTimer()
 	-- create a countdown timer that loops infinetly 
@@ -198,7 +201,10 @@ local function NumericFieldListener(event)
 				lives = lives - 1
 				secondsLeft = totalSeconds
 				UpdateHearts()
-			end		
+			end	
+			if (points == 5) then 
+				youWin.isVisible = true 
+			end 	
 		-- clear text field 
 		event.target.text = ""
 
