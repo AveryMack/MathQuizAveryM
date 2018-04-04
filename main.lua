@@ -55,7 +55,6 @@ local function AskQuestion()
 	randomNumber2 = math.random (1, 20)
     randomOperator = math.random (1, 4)
 
-    
 
 	-- create question in text object 
 	if randomOperator == 1 then
