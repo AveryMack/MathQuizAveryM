@@ -29,12 +29,14 @@ local randomNumber1
 local randomNumber2
 local userAnswer
 local correctAnswer
+local divisionAnswer
+local sqrtAnswer
 local randomOperator
 local points = 0
 local pointsObject 
 
 -- varibles for the timer
-local totalSeconds = 11
+local TOTAL_SECONDS = 11
 local secondsLeft = 11
 local clockText
 local countDownTimer
@@ -66,7 +68,8 @@ local function AskQuestion()
 	-- generate 2 random numbers between a max. and a min. number 
 	randomNumber1 = math.random (10, 20)
 	randomNumber2 = math.random (10, 20)
-    randomOperator = math.random (1, 4)
+    randomOperator = math.random (1, 5)
+
 
 
 	-- create question in text object 
@@ -97,11 +100,19 @@ local function AskQuestion()
 
 
 	elseif randomOperator == 4 then
-		randomNumber1 = math.random (1, 100) 
-		randomNumber1 = math.random (1, 100)
-		correctAnswer = randomNumber1 / randomNumber2
-		questionObject.text = randomNumber1 .. " / " .. randomNumber2 .. " = "
-	end 
+		randomNumber1 = math.random (1, 10) 
+		randomNumber2 = math.random (1, 10)
+		divisionAnswer = randomNumber1 * randomNumber2
+		correctAnswer = divisionAnswer / randomNumber1
+		questionObject.text = divisionAnswer .. " / " .. randomNumber1 .. " = "
+	
+
+	elseif randomOperator == 5 then 
+		randomNumber1 = math.random (1, 10)
+		sqrtAnswer = randomNumber1 * randomNumber1 
+		correctAnswer = math.sqrt (sqrtAnswer)
+		questionObject.text = "sqrt of " .. sqrtAnswer .. " = "
+	end
 end
 
 
@@ -140,15 +151,12 @@ local function UpdateTime()
 
 	if (secondsLeft == 0) then 
 		-- reset the number of seconds left 
-		secondsLeft = totalSeconds
+		secondsLeft = TOTAL_SECONDS
 		lives = lives - 1 
 		UpdateHearts()
 		AskQuestion()
 	end 
 end 
-
-
-
 
 
 -- function that calls the timer 
@@ -170,6 +178,11 @@ local function HideIncorrect()
 	AskQuestion()
 end 
 
+local function HideCorrectAnswer()
+	correctAnswerObject.isVisible = false
+	AskQuestion()
+end
+
 local function NumericFieldListener(event)
 	-- User begins editing "numericField"
 	if ( event.phase == "began" ) then 
@@ -187,16 +200,17 @@ local function NumericFieldListener(event)
 				timer.performWithDelay(1500, HideCorrect)
 				points = points + 1
 				pointsObject.text = points 
-				secondsLeft = totalSeconds 
+				secondsLeft = TOTAL_SECONDS 
 
 			else 
 				incorrectObject.isVisible = true 
 				incorrectSoundChannel = audio.play(incorrectSound)
 				correctAnswerObject.text = " The correct answer was " .. correctAnswer 
 				correctAnswerObject.isVisible = true
+				timer.performWithDelay(1500, HideCorrectAnswer)
 				timer.performWithDelay(1500, HideIncorrect)
 				lives = lives - 1
-				secondsLeft = totalSeconds
+				secondsLeft = TOTAL_SECONDS 
 				UpdateHearts()
 			end	
 
